@@ -86,13 +86,11 @@ These queries are saved in `subqueries.sql` inside this directory.
 
 ## Aggregations and Window Functions
 
-This task involves using SQL aggregate functions and window functions to analyze booking data.
+This file contains SQL queries that demonstrate the use of aggregation and window functions to analyze booking data in the Airbnb system.
 
----
+### 1. Total Bookings Per User
 
-### Aggregation Query
-
-**Objective**: Find the total number of bookings made by each user.
+This query calculates the total number of bookings made by each user using the `COUNT` function with `GROUP BY`.
 
 ```sql
 SELECT user_id, COUNT(*) AS total_bookings
@@ -100,18 +98,18 @@ FROM bookings
 GROUP BY user_id;
 ```
 
-* Uses `COUNT(*)` to count bookings.
-* Uses `GROUP BY` to group results by each `user_id`.
+### 2. Rank Properties by Booking Count
 
----
+This query ranks properties based on how many bookings they have received. It uses a subquery to first count bookings per property, then applies two window functions:
 
-### Window Function Query
-
-**Objective**: Rank properties based on the number of bookings they have received.
+* `RANK()` to assign ranks, allowing ties
+* `ROW_NUMBER()` to assign a unique order
 
 ```sql
-SELECT property_id, total_bookings,
-    RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank
+SELECT property_id,
+       total_bookings,
+       RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank,
+       ROW_NUMBER() OVER (ORDER BY total_bookings DESC) AS booking_row_number
 FROM (
     SELECT property_id, COUNT(*) AS total_bookings
     FROM bookings
@@ -119,10 +117,6 @@ FROM (
 ) AS booking_counts;
 ```
 
-* Uses a subquery to count bookings per `property_id`.
-* Then applies `RANK()` to assign a rank based on `total_bookings`.
-* The highest ranked property is the one with the most bookings.
+### File
 
----
-
-These queries are stored in `aggregations_and_window_functions.sql` inside this directory.
+* `aggregations_and_window_functions.sql`: contains the queries.
