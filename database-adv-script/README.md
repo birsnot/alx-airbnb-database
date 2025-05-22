@@ -37,11 +37,48 @@ FROM users u
 FULL OUTER JOIN bookings b ON b.user_id = u.id;
 ```
 
-## Usage
+## Subqueries
 
-Run these queries in a PostgreSQL-compatible environment to test and explore different types of joins.
+This task demonstrates the use of both **non-correlated** and **correlated** subqueries in SQL.
 
-## Requirements
+### Non-Correlated Subquery
 
-* Basic knowledge of SQL syntax and relational databases
-* Tables: `users`, `bookings`, `properties`, `reviews`
+**Objective**: Find all properties where the average rating is greater than 4.0.
+
+```sql
+SELECT property_id
+FROM (
+    SELECT property_id, AVG(rating) AS average_rating
+    FROM reviews
+    GROUP BY property_id
+) AS avg_ratings
+WHERE average_rating > 4.0;
+```
+
+* The inner query calculates the average rating per property.
+* The outer query filters those properties with an average rating above 4.0.
+* Since the inner query runs independently, this is a **non-correlated** subquery.
+
+---
+
+### Correlated Subquery
+
+**Objective**: Find all users who have made more than 3 bookings.
+
+```sql
+SELECT name
+FROM users u
+WHERE (
+    SELECT COUNT(*)
+    FROM bookings b
+    WHERE b.user_id = u.id
+) > 3;
+```
+
+* The inner query depends on the current user from the outer query (`u.id`).
+* It is evaluated once for each row in the `users` table.
+* This makes it a **correlated subquery**.
+
+---
+
+These queries are saved in `subqueries.sql` inside this directory.
