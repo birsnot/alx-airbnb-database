@@ -82,3 +82,47 @@ WHERE (
 ---
 
 These queries are saved in `subqueries.sql` inside this directory.
+
+
+## Aggregations and Window Functions
+
+This task involves using SQL aggregate functions and window functions to analyze booking data.
+
+---
+
+### Aggregation Query
+
+**Objective**: Find the total number of bookings made by each user.
+
+```sql
+SELECT user_id, COUNT(*) AS total_bookings
+FROM bookings
+GROUP BY user_id;
+```
+
+* Uses `COUNT(*)` to count bookings.
+* Uses `GROUP BY` to group results by each `user_id`.
+
+---
+
+### Window Function Query
+
+**Objective**: Rank properties based on the number of bookings they have received.
+
+```sql
+SELECT property_id, total_bookings,
+    RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank
+FROM (
+    SELECT property_id, COUNT(*) AS total_bookings
+    FROM bookings
+    GROUP BY property_id
+) AS booking_counts;
+```
+
+* Uses a subquery to count bookings per `property_id`.
+* Then applies `RANK()` to assign a rank based on `total_bookings`.
+* The highest ranked property is the one with the most bookings.
+
+---
+
+These queries are stored in `aggregations_and_window_functions.sql` inside this directory.
