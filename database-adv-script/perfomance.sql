@@ -1,3 +1,5 @@
+-- WHERE AND
+
 EXPLAIN ANALYZE
 SELECT b.*, u.name, p.name AS property_name, pay.amount, pay.status
 FROM bookings b
